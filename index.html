@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Osei Bennu — Game Designer & Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --offwhite: #f0ece2;
+      --yellow: #f5d90a;
+      --red: #e8294a;
+      --blue: #1a6eff;
+      --green: #00d97e;
+      --purple: #9b59ff;
+      --card-bg: #141414;
+      --border: #2a2a2a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--offwhite);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* NOISE TEXTURE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    header {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 2rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(245,217,10,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--yellow);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      gap: 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    nav a {
+      color: var(--offwhite);
+      text-decoration: none;
+      opacity: 0.5;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    nav a:hover { opacity: 1; color: var(--yellow); }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 4rem 0;
+      animation: fadeUp 1s ease 0.2s both;
+    }
+
+    .hero-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--yellow);
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--offwhite);
+    }
+
+    h1 span {
+      color: var(--yellow);
+      display: block;
+    }
+
+    .hero-bio {
+      max-width: 540px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: rgba(240,236,226,0.75);
+      margin-top: 0.5rem;
+    }
+
+    .hero-bio em {
+      color: var(--offwhite);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.8rem 1.6rem;
+      border: 1px solid;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: transparent; color: var(--yellow); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--offwhite);
+      border-color: var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--offwhite); }
+
+    .header-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--yellow);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,236,226,0.4);
+    }
+
+    .scroll-hint {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240,236,226,0.3);
+      writing-mode: vertical-rl;
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 6rem 3rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 4rem;
+      height: 1px;
+      background: var(--yellow);
+      opacity: 0.4;
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      margin-bottom: 2rem;
+    }
+
+    /* ── FEATURED PROJECT: STICKMAN ── */
+    .featured {
+      background: var(--card-bg);
+    }
+
+    .featured-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .featured-text h2 { color: var(--offwhite); }
+    .featured-text h2 span { color: var(--yellow); }
+
+    .featured-text p {
+      color: rgba(240,236,226,0.7);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .featured-text p em {
+      color: var(--offwhite);
+      font-style: italic;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      color: rgba(240,236,226,0.5);
+    }
+
+    .tag.highlight { border-color: var(--yellow); color: var(--yellow); }
+
+    .card-showcase {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .card-showcase::before {
+      content: 'CARD PREVIEW';
+      position: absolute;
+      top: -1.5rem;
+      right: 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: rgba(240,236,226,0.2);
+    }
+
+    .card-img {
+      aspect-ratio: 2/3;
+      background: var(--border);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card-img:hover {
+      transform: translateY(-4px) rotate(1deg);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: saturate(0.9);
+      transition: filter 0.3s;
+    }
+
+    .card-img:hover img { filter: saturate(1.2); }
+
+    /* ── PLAYABLE GAME ── */
+    .game-section {
+      background: var(--black);
+    }
+
+    .game-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .game-meta h2 { color: var(--offwhite); }
+    .game-meta h2 span { color: var(--green); }
+
+    .game-meta p {
+      color: rgba(240,236,226,0.7);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .game-frame {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .game-frame::before {
+      content: '▶ PLAYABLE DEMO';
+      display: block;
+      background: var(--green);
+      color: var(--black);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 0.4rem 1rem;
+    }
+
+    .game-frame iframe {
+      display: block;
+      width: 100%;
+      height: 420px;
+      border: none;
+      background: #000;
+    }
+
+    /* ── MUSIC ── */
+    .music-section {
+      background: var(--card-bg);
+    }
+
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .track {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      transition: background 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .track:hover { background: #1e1e1e; }
+
+    .track-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: rgba(240,236,226,0.1);
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    .track-name {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--offwhite);
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+    }
+
+    .track-type {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(240,236,226,0.3);
+    }
+
+    .track:hover .track-name { color: var(--yellow); }
+
+    .music-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(240,236,226,0.35);
+      margin-top: 2rem;
+      line-height: 1.7;
+    }
+
+    /* ── SCRATCH / ENGINES ── */
+    .scratch-section { background: var(--black); }
+
+    .scratch-inner {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .scratch-text h2 span { color: var(--blue); }
+
+    .scratch-text p {
+      color: rgba(240,236,226,0.7);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .scratch-stat-block {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .scratch-stat-block h3 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(240,236,226,0.35);
+      margin-bottom: 0.25rem;
+    }
+
+    .big-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      color: var(--blue);
+    }
+
+    .scratch-stat-block p {
+      font-size: 0.85rem;
+      color: rgba(240,236,226,0.6);
+      line-height: 1.6;
+    }
+
+    /* ── MENTORSHIP / COMMUNITY ── */
+    .community-section {
+      background: var(--card-bg);
+    }
+
+    .community-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .community-card {
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .community-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+    }
+
+    .community-card.yellow::before { background: var(--yellow); }
+    .community-card.purple::before { background: var(--purple); }
+    .community-card.red::before { background: var(--red); }
+    .community-card.green::before { background: var(--green); }
+
+    .community-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .community-card p {
+      font-size: 0.88rem;
+      color: rgba(240,236,226,0.65);
+      line-height: 1.7;
+    }
+
+    .community-card .card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    /* ── NEXT CHAPTER ── */
+    .next-section {
+      background: var(--black);
+      text-align: center;
+      padding: 8rem 3rem;
+    }
+
+    .next-section .section-label { justify-content: center; }
+    .next-section .section-label::after { max-width: 2rem; }
+
+    .next-section h2 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .next-section h2 span { color: var(--yellow); }
+
+    .next-section p {
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      color: rgba(240,236,226,0.6);
+      line-height: 1.8;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: rgba(240,236,226,0.25);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: rgba(240,236,226,0.25);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--yellow); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCROLLFADE ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      header, section { padding: 4rem 1.5rem; }
+      .featured-inner,
+      .game-inner,
+      .scratch-inner,
+      .community-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .stat-row { gap: 1.5rem; }
+      .card-showcase { grid-template-columns: repeat(3, 1fr); }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header>
+    <div class="header-top">
+      <span class="logo">Osei Bennu ✦ Portfolio</span>
+      <nav>
+        <a href="#games">Games</a>
+        <a href="#music">Music</a>
+        <a href="#scratch">Engines</a>
+        <a href="#community">Community</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <div class="hero-label">Game Designer & Developer</div>
+      <h1>OSEI<span>BENNU</span></h1>
+      <p class="hero-bio">
+        I make games. Lots of them — like, <em>a lot</em> of them.
+        Systems designer, world builder, composer, sprite wrangler, 
+        and occasional card game anarchist. I build the mechanics, 
+        write the jokes, compose the music, and ship the thing.
+        Currently incoming at <em>Bowie State University</em>,
+        VR &amp; Gaming (CS), Fall 2026.
+      </p>
+      <div class="hero-cta">
+        <a href="https://scratch.mit.edu/users/ClasyBoi/" target="_blank" class="btn btn-primary">View My Games ↗</a>
+        <a href="https://soundcloud.com/classiest-boi-alive" target="_blank" class="btn btn-ghost">Hear My Music ↗</a>
+        <a href="https://www.kickstarter.com/projects/bennubrothers/stickman-battleground-a-kid-made-card-based-combat-rpg" target="_blank" class="btn btn-ghost">Kickstarter ↗</a>
+      </div>
+    </div>
+
+    <div class="header-bottom">
+      <div class="stat-row">
+        <div class="stat">
+          <span class="stat-num">74+</span>
+          <span class="stat-label">Games Created</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">10+</span>
+          <span class="stat-label">Tracks Composed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1</span>
+          <span class="stat-label">Film Fest Showcase</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">Card Game Chaos</span>
+        </div>
+      </div>
+      <span class="scroll-hint">Scroll to explore</span>
+    </div>
+  </header>
+
+
+  <!-- ══════════ FEATURED: STICKMAN BATTLEGROUND ══════════ -->
+  <section class="featured" id="games">
+    <div class="section-label">Featured Project</div>
+    <div class="featured-inner reveal">
+      <div class="featured-text">
+        <h2>STICKMAN<br /><span>BATTLEGROUND</span></h2>
+        <div class="tag-row">
+          <span class="tag highlight">Card Game</span>
+          <span class="tag">System Design</span>
+          <span class="tag">Original Art</span>
+          <span class="tag">Kickstarter</span>
+          <span class="tag">Age 14</span>
+        </div>
+        <p>
+          A fully original card-based combat RPG — <em>designed, illustrated, 
+          and written entirely from scratch</em> in 9th grade. 
+          Characters have interlocking abilities, status effects, and 
+          enough mechanical depth to reward real strategy.
+        </p>
+        <p>
+          The game features characters like The Fancy Man 
+          (<em>"Fancy Man is my name, Duplication is my game!"</em>),
+          The Supporter (<em>"For legal reasons I cannot tell you that I'm a doctor"</em>),
+          and Glob — a shapeshifting monster whose method is listed as
+          <em>"Horrifically (bad) Disguises."</em>
+        </p>
+        <p>
+          Successfully crowdfunded on Kickstarter. Because why not.
+        </p>
+        <a href="https://www.kickstarter.com/projects/bennubrothers/stickman-battleground-a-kid-made-card-based-combat-rpg"
+           target="_blank" class="btn btn-ghost">View on Kickstarter ↗</a>
+      </div>
+
+      <div class="card-showcase">
+        <!-- Six card slots — uses card images from the iCloud folder names we saw -->
+        <div class="card-img" title="The Accelerator">
+          <img src="https://placehold.co/200x300/1a1a1a/f5d90a?text=Accelerator" alt="The Accelerator card" />
+        </div>
+        <div class="card-img" title="The Engineer">
+          <img src="https://placehold.co/200x300/1a1a1a/1a6eff?text=Engineer" alt="The Engineer card" />
+        </div>
+        <div class="card-img" title="The Fancy Man">
+          <img src="https://placehold.co/200x300/1a1a1a/00d97e?text=Fancy+Man" alt="The Fancy Man card" />
+        </div>
+        <div class="card-img" title="Bathroom Break">
+          <img src="https://placehold.co/200x300/1a1a1a/e8294a?text=Bathroom+Break" alt="Bathroom Break card" />
+        </div>
+        <div class="card-img" title="Dapper Clone">
+          <img src="https://placehold.co/200x300/1a1a1a/9b59ff?text=Dapper+Clone" alt="Dapper Clone card" />
+        </div>
+        <div class="card-img" title="Random Fire Accident">
+          <img src="https://placehold.co/200x300/1a1a1a/f5d90a?text=Fire+Accident" alt="Random Fire Accident card" />
+        </div>
+        <p style="grid-column:1/-1; font-family:'Space Mono',monospace; font-size:0.58rem; color:rgba(240,236,226,0.25); letter-spacing:0.08em; margin-top:0.5rem;">
+          → Replace placeholders with actual card images when deploying
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ PLAYABLE: SUPER BOXING ENGINE ══════════ -->
+  <section class="game-section" id="playable">
+    <div class="section-label">Play It Now</div>
+    <div class="game-inner reveal">
+      <div class="game-meta">
+        <h2>SUPER<br /><span>BOXING ENGINE</span></h2>
+        <div class="tag-row">
+          <span class="tag highlight">Scratch</span>
+          <span class="tag">Engine Build</span>
+          <span class="tag">MD Film Festival</span>
+          <span class="tag">CineTech 2024</span>
+        </div>
+        <p>
+          Selected for the Maryland Film Festival's CineTech Gaming &amp; 
+          Interactive Cinema Showcase — the only student work featured 
+          alongside professional interactive media pieces.
+        </p>
+        <p>
+          Built in Scratch as a fully functional boxing engine. 
+          Not a demo. An engine. There's a difference, and Osei knows it.
+        </p>
+        <a href="https://scratch.mit.edu/projects/1147450432/" target="_blank" class="btn btn-ghost" style="margin-top:0.5rem;">
+          Open in Scratch ↗
+        </a>
+      </div>
+
+      <div class="game-frame">
+        <iframe
+          src="https://scratch.mit.edu/projects/1147450432/embed"
+          allowtransparency="true"
+          width="100%"
+          height="420"
+          frameborder="0"
+          scrolling="no"
+          allowfullscreen
+          title="Super Boxing Engine by Osei Bennu">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ MUSIC ══════════ -->
+  <section class="music-section" id="music">
+    <div class="section-label">Original Soundtracks</div>
+    <div class="reveal">
+      <h2>COMPOSED<br /><span style="color:var(--purple)">FOR GAMES</span></h2>
+      <p style="max-width:560px; color:rgba(240,236,226,0.65); line-height:1.8; font-size:0.95rem; margin-bottom:0.5rem;">
+        Every track written for a specific game context — boss fights, 
+        chase sequences, factory levels, haunted zones. 
+        The titles ("Rubber Duck Fever," "Boiled Eggs," "Admin Abuse V2") 
+        are accurate and intentional.
+      </p>
+    </div>
+
+    <div class="music-grid reveal">
+      <a href="https://soundcloud.com/classiest-boi-alive/admin-abuse-v2" target="_blank" class="track">
+        <div class="track-num">01</div>
+        <div class="track-name">Admin Abuse V2</div>
+        <div class="track-type">Bossfight Music</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/paranormal-instigation" target="_blank" class="track">
+        <div class="track-num">02</div>
+        <div class="track-name">Paranormal Instigation</div>
+        <div class="track-type">Atmospheric</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/bit-ruins" target="_blank" class="track">
+        <div class="track-num">03</div>
+        <div class="track-name">Bit Ruins</div>
+        <div class="track-type">Stage Theme</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/rubber-duck-fever-factory-8" target="_blank" class="track">
+        <div class="track-num">04</div>
+        <div class="track-name">Rubber Duck Fever</div>
+        <div class="track-type">Factory Level</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/gameshow-boast" target="_blank" class="track">
+        <div class="track-num">05</div>
+        <div class="track-name">Gameshow Boast</div>
+        <div class="track-type">Theme Music</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/lost-wax-lost-guys-chase-theme" target="_blank" class="track">
+        <div class="track-num">06</div>
+        <div class="track-name">Lost Wax</div>
+        <div class="track-type">Chase Theme</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/deep-friend-duck-rgohide-seek-9" target="_blank" class="track">
+        <div class="track-num">07</div>
+        <div class="track-name">Deep Fried Duck</div>
+        <div class="track-type">Hide &amp; Seek</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive/psychic-island-remix" target="_blank" class="track">
+        <div class="track-num">08</div>
+        <div class="track-name">Psychic Island Remix</div>
+        <div class="track-type">Remix</div>
+      </a>
+      <a href="https://soundcloud.com/classiest-boi-alive" target="_blank" class="track" style="background:#111">
+        <div class="track-num" style="color:rgba(245,217,10,0.3)">→</div>
+        <div class="track-name" style="color:var(--yellow)">All Tracks on SoundCloud</div>
+        <div class="track-type">Full Catalog</div>
+      </a>
+    </div>
+
+    <p class="music-note reveal">
+      Music composed as collaborator on team projects. All tracks written to spec for game levels, 
+      bossfights, and interactive sequences. Osei's the one who makes it feel right when you 
+      walk into a room and immediately know something is wrong.
+    </p>
+  </section>
+
+
+  <!-- ══════════ SCRATCH / ENGINES ══════════ -->
+  <section class="scratch-section" id="scratch">
+    <div class="section-label">Game Engines & Projects</div>
+    <div class="scratch-inner reveal">
+      <div class="scratch-text">
+        <h2>74 GAMES<br /><span>AND COUNTING</span></h2>
+        <p>
+          The Scratch profile at ClasyBoi isn't a beginner's playground — 
+          it's an active R&amp;D lab. Over 74 projects including original games, 
+          reusable engines, and interactive tools that other developers have 
+          built upon and remixed.
+        </p>
+        <p>
+          Part of an indie Roblox dev team that formed organically on Scratch. 
+          Contributes world design, movesets, sprite programming, and music 
+          depending on what the project needs — because good game dev is 
+          about filling gaps, not just claiming credit.
+        </p>
+        <p>
+          Currently building moveset systems in Roblox Studio. 
+          Also tutoring fellow developers in his Discord community 
+          on game design fundamentals.
+          <em style="color:rgba(240,236,226,0.9)">He explains it better than most textbooks.</em>
+        </p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+          <a href="https://scratch.mit.edu/users/ClasyBoi/" target="_blank" class="btn btn-ghost">Scratch Profile ↗</a>
+          <a href="#" target="_blank" class="btn btn-ghost" style="opacity:0.4; cursor:default;">Roblox Work (link TBA)</a>
+        </div>
+      </div>
+
+      <div class="scratch-stat-block">
+        <div>
+          <h3>Projects Built</h3>
+          <div class="big-num">74+</div>
+        </div>
+        <div style="border-top:1px solid var(--border); padding-top:1.5rem;">
+          <h3>Recognition</h3>
+          <p>Maryland Film Festival<br />CineTech Showcase 2024<br /><em style="color:var(--offwhite); font-style:normal;">Only student work selected</em></p>
+        </div>
+        <div style="border-top:1px solid var(--border); padding-top:1.5rem;">
+          <h3>Community</h3>
+          <p>IGDA Student Member<br />Indie Roblox Dev Team<br />Discord Game Dev Mentor</p>
+        </div>
+        <div style="border-top:1px solid var(--border); padding-top:1.5rem;">
+          <h3>Preferred Tools</h3>
+          <p style="font-family:'Space Mono',monospace; font-size:0.75rem; color:rgba(240,236,226,0.5);">
+            Scratch · Roblox Studio<br />
+            <span style="color:var(--yellow)">+ Unity incoming (Bowie, 2026)</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ COMMUNITY ══════════ -->
+  <section class="community-section" id="community">
+    <div class="section-label">Community & Credentials</div>
+    <h2 class="reveal">IN THE<br /><span style="color:var(--red)">ECOSYSTEM</span></h2>
+    <div class="community-inner" style="margin-top:3rem;">
+      <div class="community-card yellow reveal">
+        <div class="card-tag">Crowdfunding</div>
+        <h3>Kickstarter Creator</h3>
+        <p>Successfully crowdfunded Stickman Battleground in 9th grade — handling game design, art direction, writing, and campaign management as a solo teen founder. Proof of concept: shipped and funded.</p>
+      </div>
+      <div class="community-card purple reveal">
+        <div class="card-tag">Industry Membership</div>
+        <h3>IGDA Student Member</h3>
+        <p>International Game Developers Association student member — attending events, networking with professionals, and staying current on industry trends well before college. Already in the room.</p>
+      </div>
+      <div class="community-card red reveal">
+        <div class="card-tag">Exhibition · 2024</div>
+        <h3>Maryland Film Festival</h3>
+        <p>Super Boxing Engine selected for the CineTech Gaming &amp; Interactive Cinema Showcase at the Maryland Film Festival. Only student piece in a professional showcase of gaming and interactive cinema.</p>
+      </div>
+      <div class="community-card green reveal">
+        <div class="card-tag">Peer Education</div>
+        <h3>Discord Dev Mentor</h3>
+        <p>Active mentor in a game development Discord community, teaching other developers how to build game systems, design mechanics, and think through problems. Teaching is how you really learn.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ NEXT CHAPTER ══════════ -->
+  <section class="next-section">
+    <div class="section-label">What's Next</div>
+    <h2>BOWIE STATE<br /><span>FALL 2026</span></h2>
+    <p>
+      Incoming freshman, BS in Virtual Reality &amp; Gaming (Computer Science track).
+      Joining a small, focused cohort to build games, XR experiences, 
+      and whatever comes next. Portfolio under active construction — 
+      check back often.
+    </p>
+    <div class="hero-cta" style="justify-content:center;">
+      <a href="https://scratch.mit.edu/users/ClasyBoi/" target="_blank" class="btn btn-primary">Play My Games ↗</a>
+      <a href="https://soundcloud.com/classiest-boi-alive" target="_blank" class="btn btn-ghost">Hear My Music ↗</a>
+    </div>
+  </section>
+
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <span>© 2026 Osei Bennu — oseibennu.com</span>
+    <div class="footer-links">
+      <a href="https://scratch.mit.edu/users/ClasyBoi/" target="_blank">Scratch</a>
+      <a href="https://soundcloud.com/classiest-boi-alive" target="_blank">SoundCloud</a>
+      <a href="https://www.kickstarter.com/projects/bennubrothers/stickman-battleground-a-kid-made-card-based-combat-rpg" target="_blank">Kickstarter</a>
+      <a href="#" target="_blank">itch.io (coming soon)</a>
+    </div>
+  </footer>
+
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
